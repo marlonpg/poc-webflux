@@ -1,6 +1,7 @@
 package com.gambasoftware.poc.webflux.service;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.List;
@@ -30,6 +31,14 @@ public class FluxAndMonoService {
         return Flux.fromIterable(List.of("migi", "nami", "tini"))
                 .concatMap(s -> Flux.fromArray(s.split(""))
                         .delayElements(Duration.ofMillis(100)))
+                .log();
+    }
+
+    public Flux<String> getNamesFlatMapMany() {
+        return Flux.fromIterable(List.of("migi", "nami", "tini"))
+                .flatMap(name -> Mono.just(name)
+                        .flatMapMany(n -> Flux.fromArray(n.split(""))
+                                .delayElements(Duration.ofMillis(100))))
                 .log();
     }
 }
