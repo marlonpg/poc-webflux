@@ -87,6 +87,15 @@ public class FluxAndMonoTest {
         StepVerifier.create(fluxAndMonoService.getNamesConcat())
                 .expectNextCount(12)
                 .verifyComplete();
+    }
 
+    @Test
+    public void testGetNamesFlatMapMany_NoDelay() {
+        FluxAndMonoService fluxAndMonoService = new FluxAndMonoService();
+        Flux<String> flux = fluxAndMonoService.getNamesFlatMapMany();
+
+        StepVerifier.create(flux)
+                .expectNext("m", "i", "g", "i")
+                .verifyComplete();
     }
 }

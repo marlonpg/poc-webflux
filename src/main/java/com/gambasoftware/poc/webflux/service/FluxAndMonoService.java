@@ -8,18 +8,18 @@ import java.util.List;
 
 public class FluxAndMonoService {
 
-    public Flux<String> getNames(){
+    public Flux<String> getNames() {
         return Flux.fromIterable(List.of("migi", "nami", "tini"));
     }
 
-    public Flux<String> getNamesDelayed(){
+    public Flux<String> getNamesDelayed() {
         return Flux.fromIterable(List.of("migi", "nami", "tini"))
                 .log()
                 .delayElements(Duration.ofMillis(1000));
     }
 
     //Flatmap is concurrent
-    public Flux<String> getNamesFlatMap(){
+    public Flux<String> getNamesFlatMap() {
         return Flux.fromIterable(List.of("migi", "nami", "tini"))
                 .flatMap(s -> Flux.fromArray(s.split(""))
                         .delayElements(Duration.ofMillis(100)))
@@ -27,7 +27,7 @@ public class FluxAndMonoService {
     }
 
     //Concat preserve the order but it is sequential so it will take more time
-    public Flux<String> getNamesConcat(){
+    public Flux<String> getNamesConcat() {
         return Flux.fromIterable(List.of("migi", "nami", "tini"))
                 .concatMap(s -> Flux.fromArray(s.split(""))
                         .delayElements(Duration.ofMillis(100)))
@@ -35,10 +35,8 @@ public class FluxAndMonoService {
     }
 
     public Flux<String> getNamesFlatMapMany() {
-        return Flux.fromIterable(List.of("migi", "nami", "tini"))
-                .flatMap(name -> Mono.just(name)
-                        .flatMapMany(n -> Flux.fromArray(n.split(""))
-                                .delayElements(Duration.ofMillis(100))))
+        return Mono.just("migi")
+                .flatMapMany(n -> Flux.fromArray(n.split("")))
                 .log();
     }
 }
